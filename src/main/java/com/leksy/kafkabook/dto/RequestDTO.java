@@ -1,17 +1,21 @@
 package com.leksy.kafkabook.dto;
 
-import com.leksy.kafkabook.dto.request.BookPathVariablesDTO;
-import com.leksy.kafkabook.dto.request.HeaderDTO;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.leksy.kafkabook.dto.request.BookDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.Map;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class RequestDTO {
     private String http;
+    @JsonProperty("URL")
     private String url;
-    private HeaderDTO headerDTO;
-    private BookPathVariablesDTO bookPathVariablesDTO;
+    private BookDTO body;
+    private Map<String,String> header;
+    private Map<String,String> parameters;
 }
