@@ -23,7 +23,6 @@ public class KafkaConsumerConfig {
     private String kafkaServerEndpoint;
 
 
-
     @Bean
     public Map<String, Object> consumerConfigs() {
         Map<String, Object> props = new HashMap<>();

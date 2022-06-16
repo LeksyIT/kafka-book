@@ -1,0 +1,11 @@
+{
+  "http": "GET",
+  "URL": "http://localhost:8080/booking",
+  "header": {
+    "Accept": "application/json",
+    "Cache-Control": "no-cache"
+  },
+  "parameters": {
+    "id": 2
+  }
+}

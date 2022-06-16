@@ -11,8 +11,8 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 @ControllerAdvice
-public class BookAdvice  extends ResponseEntityExceptionHandler {
-    @ExceptionHandler(value =  NotAllFieldsAreFilledInException.class )
+public class BookAdvice extends ResponseEntityExceptionHandler {
+    @ExceptionHandler(value = NotAllFieldsAreFilledInException.class)
     protected ResponseEntity<Object> notAllFieldsAreFilledIn(
             RuntimeException ex, WebRequest request) {
         String bodyOfResponse = "please filling all field in JSON(producer)";
@@ -20,7 +20,7 @@ public class BookAdvice  extends ResponseEntityExceptionHandler {
                 new HttpHeaders(), HttpStatus.NO_CONTENT, request);
     }
 
-    @ExceptionHandler(value =  NotValidHttpMethodException.class )
+    @ExceptionHandler(value = NotValidHttpMethodException.class)
     protected ResponseEntity<Object> notValidHttpMethod(
             RuntimeException ex, WebRequest request) {
         String bodyOfResponse = "please enter valid httpMethod";

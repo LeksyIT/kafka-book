@@ -1,0 +1,18 @@
+{
+  "http": "PUT",
+  "URL": "http://localhost:8080/booking",
+  "body": {
+    "title": "title1231",
+    "authorName": "authorName123",
+    "pageCount": 10000,
+    "publishedDate": "2022-06-10",
+    "publication": "publication3123"
+  },
+  "header": {
+    "Accept": "application/json",
+    "Content-Type": "application/json;charset=iso-8859-1"
+  },
+  "parameters": {
+    "id": 4
+  }
+}

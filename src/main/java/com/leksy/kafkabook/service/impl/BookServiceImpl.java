@@ -16,25 +16,25 @@ public class BookServiceImpl implements BookService {
 
     private final RestTemplate restTemplate;
 
-    private HttpEntity<BookDTO> deleteRequest(RequestDTO requestDTO){
-        restTemplate.delete(requestDTO.getUrl() + "?id=" + requestDTO.getParameters().get("id"),BookDTO.class);
-    return new HttpEntity<>(requestDTO.getBody());
+    private HttpEntity<BookDTO> deleteRequest(RequestDTO requestDTO) {
+        restTemplate.delete(requestDTO.getUrl() + "?id=" + requestDTO.getParameters().get("id"), BookDTO.class);
+        return new HttpEntity<>(requestDTO.getBody());
     }
 
     @KafkaListener(topics = "reflectoring-1", groupId = "json")
-    public void listenFromKafka(RequestDTO requestDTO){
+    public void listenFromKafka(RequestDTO requestDTO) {
         createRequest(requestDTO);
         System.out.println("Message: " + requestDTO);
     }
 
     @Override
     public HttpEntity<BookDTO> createRequest(RequestDTO requestDTO) {
-        if (checkForValidField(requestDTO)){
+        if (checkForValidField(requestDTO)) {
             throw new NotAllFieldsAreFilledInException("Нет необходимых полей в JSONe");
         }
         HttpEntity<BookDTO> entity = new HttpEntity<>(requestDTO.getBody());
         return switch (requestDTO.getHttp()) {
-            case ("GET") -> restTemplate.getForEntity(requestDTO.getUrl() + "?id=" + requestDTO.getParameters().get("id"),BookDTO.class);
+            case ("GET") -> restTemplate.getForEntity(requestDTO.getUrl() + "?id=" + requestDTO.getParameters().get("id"), BookDTO.class);
             case ("DELETE") -> deleteRequest(requestDTO);
             case ("PUT") -> restTemplate.exchange(requestDTO.getUrl() + "?id=" + requestDTO.getParameters().get("id"), HttpMethod.PUT, entity, BookDTO.class);
             case ("POST") -> restTemplate.postForEntity(requestDTO.getUrl(), entity, BookDTO.class);
@@ -42,25 +42,24 @@ public class BookServiceImpl implements BookService {
         };
     }
 
-    private boolean checkForValidField(RequestDTO requestDTO){
+    private boolean checkForValidField(RequestDTO requestDTO) {
         //Check URL
-        if (requestDTO.getUrl() == null || requestDTO.getUrl().equals("")){
+        if (requestDTO.getUrl() == null || requestDTO.getUrl().equals("")) {
             return true;
         }
         //Check HttpMethod
-        if (requestDTO.getHttp() == null || requestDTO.getHttp().equals("")){
+        if (requestDTO.getHttp() == null || requestDTO.getHttp().equals("")) {
             return true;
         }
         //Check Header
-        if (requestDTO.getHeader() == null){
+        if (requestDTO.getHeader() == null) {
             return true;
         }
         //Check GET DELETE PUT
-        if (requestDTO.getHttp().equals("PUT") || requestDTO.getHttp().equals("DELETE") || requestDTO.getHttp().equals("GET")){
+        if (checkParam(requestDTO))
             return requestDTO.getParameters() == null || requestDTO.getParameters().get("id") == null || requestDTO.getParameters().get("id").equals("");
-        }
         //Check POST PUT
-        if (requestDTO.getHttp().equals("POST") || requestDTO.getHttp().equals("PUT")){
+        if (requestDTO.getHttp().equals("POST") || requestDTO.getHttp().equals("PUT")) {
             return requestDTO.getBody() == null ||
                     requestDTO.getBody().getAuthorName() == null || requestDTO.getBody().getAuthorName().equals("") ||
                     requestDTO.getBody().getPublication() == null || requestDTO.getBody().getPublication().equals("") ||
@@ -68,7 +67,10 @@ public class BookServiceImpl implements BookService {
                     requestDTO.getBody().getTitle() == null || requestDTO.getBody().getTitle().equals("") ||
                     requestDTO.getBody().getPublishedDate() == null;
         }
-
         return false;
+    }
+
+    private boolean checkParam(RequestDTO requestDTO) {
+        return requestDTO.getHttp().equals("PUT") || requestDTO.getHttp().equals("DELETE") || requestDTO.getHttp().equals("GET");
     }
 }

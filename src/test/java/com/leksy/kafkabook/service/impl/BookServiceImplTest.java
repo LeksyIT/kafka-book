@@ -1,23 +1,23 @@
 package com.leksy.kafkabook.service.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.leksy.kafkabook.dto.RequestDTO;
 import com.leksy.kafkabook.dto.request.BookDTO;
-import org.junit.Before;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
+import org.testcontainers.shaded.org.apache.commons.io.IOUtils;
+
+import java.io.*;
 
 import static org.mockito.ArgumentMatchers.*;
 
@@ -31,47 +31,21 @@ class BookServiceImplTest {
     private BookServiceImpl bookService;
 
     @Test
-    void toRequestDTOGet() throws JsonProcessingException {
-        String json = """
-                {
-                  "http": "GET",
-                  "URL": "http://localhost:8080/booking",
-                   "header": {
-                    "Accept": "application/json",
-                    "Cache-Control": "no-cache"
-                  },
-                  "parameters": {
-                    "id":2
-                  }
-                }""";
+    void toRequestDTOGet() throws IOException {
+        String json = getJSON("src/test/resources/GetRequest");
         RequestDTO requestDTO = new ObjectMapper()
                 .readerFor(RequestDTO.class)
                 .readValue(json);
         Mockito.when(restTemplate.getForEntity(eq("http://localhost:8080/booking?id=2"), eq(BookDTO.class))).
                 thenReturn(new ResponseEntity<>(requestDTO.getBody(), HttpStatus.OK));
         BookDTO bookDTO = bookService.createRequest(requestDTO).getBody();
-        System.out.println(bookDTO);
+        System.out.println(requestDTO.getParameters());
         Assertions.assertEquals(bookDTO, requestDTO.getBody());
     }
 
     @Test
-    void toRequestDTOPost() throws JsonProcessingException {
-        String json = """
-                {
-                  "http": "POST",
-                  "URL": "http://localhost:8080/booking",
-                  "body": {
-                    "title": "title",
-                    "authorName": "authorName",
-                    "pageCount": 10,
-                    "publishedDate": "2022-06-10",
-                    "publication": "publication"
-                  },
-                  "header": {
-                    "Accept": "application/json",
-                    "Content-Type": "application/json;charset=iso-8859-1"
-                  }
-                }""";
+    void toRequestDTOPost() throws IOException {
+        String json = getJSON("src/test/resources/PostRequest.JSON");
         RequestDTO requestDTO = new ObjectMapper()
                 .readerFor(RequestDTO.class)
                 .readValue(json);
@@ -85,26 +59,8 @@ class BookServiceImplTest {
     }
 
     @Test
-    void toRequestDTOPut() throws JsonProcessingException {
-        String json = """
-                {
-                  "http": "PUT",
-                  "URL": "http://localhost:8080/booking",
-                  "body": {
-                    "title": "title1231",
-                    "authorName": "authorName123",
-                    "pageCount": 10000,
-                    "publishedDate": "2022-06-10",
-                    "publication": "publication3123"
-                  },
-                  "header": {
-                    "Accept": "application/json",
-                    "Content-Type": "application/json;charset=iso-8859-1"
-                  },
-                  "parameters": {
-                    "id":4
-                  }
-                }""";
+    void toRequestDTOPut() throws IOException {
+        String json = getJSON("src/test/resources/PutRequest");
         RequestDTO requestDTO = new ObjectMapper()
                 .readerFor(RequestDTO.class)
                 .readValue(json);
@@ -117,5 +73,9 @@ class BookServiceImplTest {
         Assertions.assertEquals(bookDTO, requestDTO.getBody());
     }
 
+    private String getJSON(String path) throws IOException {
+        FileInputStream fis = new FileInputStream(path);
+        return IOUtils.toString(fis, "UTF-8");
+    }
 
 }

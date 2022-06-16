@@ -16,6 +16,6 @@ public class RequestDTO {
     @JsonProperty("URL")
     private String url;
     private BookDTO body;
-    private Map<String,String> header;
-    private Map<String,String> parameters;
+    private Map<String, String> header;
+    private Map<String, String> parameters;
 }

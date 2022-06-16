@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
-class KafkaProducerConfig {
+public class KafkaProducerConfig {
 
     @Value(value = "${kafka.server.endpoint:localhost:9092}")
     private String kafkaServerEndpoint;

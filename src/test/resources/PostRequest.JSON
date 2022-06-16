@@ -1,0 +1,15 @@
+{
+  "http": "POST",
+  "URL": "http://localhost:8080/booking",
+  "body": {
+    "title": "title",
+    "authorName": "authorName",
+    "pageCount": 10,
+    "publishedDate": "2022-06-10",
+    "publication": "publication"
+  },
+  "header": {
+    "Accept": "application/json",
+    "Content-Type": "application/json;charset=iso-8859-1"
+  }
+}
